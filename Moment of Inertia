@@ -1,0 +1,84 @@
+import math
+from matplotlib import pyplot as plt
+
+# Inputs
+MoI = []
+span = []
+Cr = 5.55 #m
+Ct = 1.59 #m
+taper = Ct/Cr
+b = 32.17 #m
+tc_front = 0.15782
+tc_rear = 0.07369
+y = 0 #m
+dy = 0.1 #m
+t =  #m
+n_spars_hor =
+A_spars = #m^2
+
+while y < b/2:
+
+    # Local Chord Length
+    chord = Cr(1 - ((2 * y) / b ) * (1 - taper))
+
+    # Spar Height
+    frontspar = chord * tc_front
+    rearspar = chord * tc_rear
+
+    # x-centroid of each component
+    x0_front = 0
+    x0_rear = chord
+    x0_hor = chord / 2
+    x0_diag = chord / 2
+
+    # z-centroid of each component
+    z0_front = frontspar/2
+    z0_rear = rearspar/2
+    z0_hor = frontspar
+    z0_diag = math.sqrt(chord^2 + (frontspar - rearspar)^2) / 2
+
+    # Find Centroid
+    x_bar = (x0_front + x0_rear + x0_hor + x0_diag) / 4
+    z_bar = (z0_front + z0_rear + z0_hor + z0_diag) / 4
+
+    # Individual Moments of Inertia
+
+    # MoI Stringers on Horizontal Bar
+    MoI_stringer_vert = n_spars_hor * A_spars * ( - z_bar)^2
+
+    # MoI Stringer on Diagonal Bar
+
+
+    # MoI Vertical Bar
+    MoI_hor_own = 1/12 * chord * t^3
+    MoI_hor_steiner = chord * t * (z0_hor - z_bar)^2
+    MoI_hor = MoI_hor_own + MoI_hor_steiner
+
+    # MoI Diagonal Bar
+    MoI_diag_own =
+    MoI_diag_steiner = t * math.sqrt(chord^2 + (frontspar - rearspar)^2) * (z0_diag - z_bar)^2
+    MoI_diag = MoI_diag_own + MoI_diag_steiner
+
+    # MoI Front Spar Bar
+    MoI_front_own = 1/12 * t * frontspar^3
+    MoI_front_steiner = t * frontspar * (z0_front - z_bar)^2
+    MoI_front = MoI_front_own + MoI_front_steiner
+
+    # MoI Rear Spar Bar
+    MoI_rear_own = 1/12 * t * rearspar^3
+    MoI_rear_steiner = t * rearspar * (z0_rear - z_bar)^2
+    MoI_rear = MoI_rear_own + MoI_rear_steiner
+
+    # Total Moment of Inertia
+    MoI_tot = MoI_hor + MoI_diag + MoI_front + MoI_rear + MoI_stringer_vert
+
+    # Append to list per unit b/2
+    MoI.append(MoI_tot)
+    span.append(y)
+
+    # Update span position
+    y = y + dy
+
+# Plot
+plt.plot(MoI,span)
+plt.show()
